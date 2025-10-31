@@ -2,9 +2,11 @@ import React, { useContext } from "react";
 import { Link, NavLink } from "react-router";
 import "../index.css";
 import { AuthContex } from "../Context/AuthContex";
+import Loder from "./Loder";
+import { HashLoader } from "react-spinners";
 
 const Navbar = () => {
-  const { logOutUser, user } = useContext(AuthContex);
+  const { logOutUser, user, loding } = useContext(AuthContex);
   // console.log(user)
   const link = (
     <div className="text-[16px] font-medium">
@@ -27,9 +29,9 @@ const Navbar = () => {
   );
 
   const handelLogOut = () => {
-     logOutUser();
-  }
- 
+    logOutUser();
+  };
+
   return (
     <div>
       <div className="navbar  w-11/12 mx-auto ">
@@ -67,24 +69,29 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1">{link}</ul>
         </div>
         <div className="navbar-end">
-        {
-          user ?   
-            <button onClick={handelLogOut} className="ml-2 btn  text-white bg-gradient-to-r from-[#632EE3] to-[#9F62F2]">Logout</button>
-          : <div> 
-            <Link to="/login">
-            {" "}
-            <button className="btn btn-outline btn-primary">Login</button>
-          </Link>
-          <Link to="/register">
-            {" "}
-            <button className="ml-2 btn  text-white bg-gradient-to-r from-[#632EE3] to-[#9F62F2]">
-              Register
+          {loding ? (
+            <HashLoader color="#13e1cf" />
+          ) : user ? (
+            <button
+              onClick={handelLogOut}
+              className="ml-2 btn  text-white bg-gradient-to-r from-[#632EE3] to-[#9F62F2]"
+            >
+              Logout
             </button>
-          </Link>
-          </div>
-        }
-
-       
+          ) : (
+            <div>
+              <Link to="/login">
+                {" "}
+                <button className="btn btn-outline btn-primary">Login</button>
+              </Link>
+              <Link to="/register">
+                {" "}
+                <button className="ml-2 btn  text-white bg-gradient-to-r from-[#632EE3] to-[#9F62F2]">
+                  Register
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

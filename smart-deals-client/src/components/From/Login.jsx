@@ -18,8 +18,25 @@ const Login = () => {
     console.log({ email, password });
     userLogin(email, password)
       .then((result) => {
-          navagiet(`${locations.state ? locations.state : "/"}`);
-        console.log(result.user);
+        navagiet(`${locations.state ? locations.state : "/"}`);
+        const userdat = {
+         name:  result.user.displayName,
+         email: result.user.email,
+         image: result.user.photoURL
+        }
+        console.log(result);
+        fetch("http://localhost:3000/user",{
+          method:"POST",
+          headers:{
+            "content-type":"application/json"
+          },
+          body:JSON.stringify(userdat)
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Login User Data Saved in MongoDB Database', data)
+        })
+        
       })
       .catch((err) => {
         console.log(err);
@@ -30,7 +47,24 @@ const Login = () => {
     googleLogin()
       .then((result) => {
         console.log(result.user);
-          navagiet(`${locations.state ? locations.state : "/"}`);
+        navagiet(`${locations.state ? locations.state : "/"}`);
+          const userdat = {
+         name:  result.user.displayName,
+         email: result.user.email,
+         image: result.user.photoURL
+        }
+
+          fetch("http://localhost:3000/user",{
+          method:"POST",
+          headers:{
+            "content-type":"application/json"
+          },
+          body:JSON.stringify(userdat)
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Login User Data Saved in MongoDB Database', data)
+        })
       })
       .catch((err) => console.log(err));
   };

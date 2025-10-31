@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import Login from "../components/From/Login";
 import Register from "../components/From/Register";
 import leftPattern from "../assets/bg-hero-left.png"; // your 2nd image
 import rightPattern from "../assets/bg-hero-right.png";
 import { IoIosSearch } from "react-icons/io";
+import { AuthContex } from "../Context/AuthContex";
+import { HashLoader } from "react-spinners";
 
 const Home = () => {
+  const {loding} = useContext(AuthContex);
   return (
     <div>
+     
+      
       <section className="relative bg-gradient-to-r from-[#f5e6ff] via-[#e7f0ff] to-[#fdf2ff] overflow-hidden pt-24 pb-20 flex flex-col items-center text-center">
         {/* Left background pattern */}
         <img
@@ -58,6 +63,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      
     </div>
   );
 };

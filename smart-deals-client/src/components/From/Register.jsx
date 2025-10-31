@@ -23,8 +23,25 @@ const Register = () => {
     userCreat(email, password)
       .then((result) => {
         console.log(result.user);
+        const userdat = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
         updeatUser(updet).then(() => {
           navagiet(`${locations.state ? locations.state : "/"}`);
+
+          fetch("http://localhost:3000/user", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(userdat),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log("Login User Data Saved in MongoDB Database", data);
+            });
         });
       })
       .catch((er) => {
@@ -37,6 +54,23 @@ const Register = () => {
       .then((result) => {
         console.log(result.user);
         navagiet(`${locations.state ? locations.state : "/"}`);
+        const userdat = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
+
+        fetch("http://localhost:3000/user", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(userdat),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Login User Data Saved in MongoDB Database", data);
+          });
       })
       .catch((err) => {
         console.log(err);

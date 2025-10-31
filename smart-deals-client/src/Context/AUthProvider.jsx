@@ -18,22 +18,27 @@ const AUthProvider = ({ children  }) => {
 
 
   const userCreat = (email, password) => {
+    setLoding(true)
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const updeatUser = (updet) => {
+    setLoding(true)
     return updateProfile(auth.currentUser, updet);
   };
 
   const userLogin = (email, password) => {
+    setLoding(true)
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const googleLogin = () => {
+    setLoding(true)
     return signInWithPopup(auth, provider);
   };
 
   const logOutUser = () => {
+    setLoding(true)
     return signOut(auth);
   }
 

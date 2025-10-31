@@ -29,8 +29,41 @@ async function run() {
     const myDb = client.db("smart_dealsDB");
     const myCollection = myDb.collection("smartDeals");
     const myBids = myDb.collection("bids");
+    const myUser  = myDb.collection("user")
+    // userApi
+    app.get("/user", async (req,res) => {
+      const data = myUser.find();
+      const result = await data.toArray();
+      res.send(result)
+    })
 
-    // getAll
+    app.post("/user", async (req,res) => {
+      const request = req.body;
+      const result = await myUser.insertOne(request)
+      res.send(result);
+      console.log(request)
+    })
+
+    app.patch("/user/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const data = req.body;
+      const seter = {
+        $set:data
+      }
+      const result = await myUser.updateOne(query, seter)
+      res.send(result)
+    })
+
+    app.delete("/user/:id", async (req,res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await myUser.deleteOne(query);
+      res.send(result);
+    })
+
+
+    // ProducatgetAll
     app.get("/producat", async (req, res) => {
       //   const projectFild = { title: 1, price_min: 1, price_max: 1, image: 1 };
       //   const data = myCollection.find().sort({ price_min: -1 }).skip(2).limit(6).project(projectFild);
