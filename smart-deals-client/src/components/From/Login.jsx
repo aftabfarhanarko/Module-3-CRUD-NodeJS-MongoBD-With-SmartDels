@@ -9,68 +9,66 @@ const Login = () => {
   const { userLogin, googleLogin } = useContext(AuthContex);
   const locations = useLocation();
   const navagiet = useNavigate();
-  console.log(locations);
+  // console.log(locations);
 
   const handelLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log({ email, password });
+    // console.log({ email, password });
     userLogin(email, password)
       .then((result) => {
         navagiet(`${locations.state ? locations.state : "/"}`);
         const userdat = {
-         name:  result.user.displayName,
-         email: result.user.email,
-         image: result.user.photoURL
-        }
-        console.log(result);
-        fetch("http://localhost:3000/user",{
-          method:"POST",
-          headers:{
-            "content-type":"application/json"
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
+        // console.log(result);
+        fetch("http://localhost:3000/user", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
           },
-          body:JSON.stringify(userdat)
+          body: JSON.stringify(userdat),
         })
-        .then(res => res.json())
-        .then(data => {
-          console.log('Login User Data Saved in MongoDB Database', data)
-        })
-        
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Login User Data Saved in MongoDB Database", data);
+          });
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
   const handelGoogle = () => {
     googleLogin()
       .then((result) => {
-        console.log(result.user);
+        // console.log(result.user);
         navagiet(`${locations.state ? locations.state : "/"}`);
-          const userdat = {
-         name:  result.user.displayName,
-         email: result.user.email,
-         image: result.user.photoURL
-        }
+        const userdat = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
 
-          fetch("http://localhost:3000/user",{
-          method:"POST",
-          headers:{
-            "content-type":"application/json"
+        fetch("http://localhost:3000/user", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
           },
-          body:JSON.stringify(userdat)
+          body: JSON.stringify(userdat),
         })
-        .then(res => res.json())
-        .then(data => {
-          console.log('Login User Data Saved in MongoDB Database', data)
-        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Login User Data Saved in MongoDB Database", data);
+          });
       })
-      .catch((err) => console.log(err));
+      .catch() ;
   };
   return (
     <div>
-      <Navbar></Navbar>
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm p-8">
           <h2 className="text-center text-3xl font-semibold text-gray-800">

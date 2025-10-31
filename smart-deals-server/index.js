@@ -29,39 +29,53 @@ async function run() {
     const myDb = client.db("smart_dealsDB");
     const myCollection = myDb.collection("smartDeals");
     const myBids = myDb.collection("bids");
-    const myUser  = myDb.collection("user")
+    const myUser = myDb.collection("user");
+
     // userApi
-    app.get("/user", async (req,res) => {
+    app.get("/user", async (req, res) => {
       const data = myUser.find();
       const result = await data.toArray();
-      res.send(result)
-    })
-
-    app.post("/user", async (req,res) => {
-      const request = req.body;
-      const result = await myUser.insertOne(request)
       res.send(result);
-      console.log(request)
-    })
+    });
+
+    app.post("/user", async (req, res) => {
+      const request = req.body;
+      const email = req.body.email;
+      const query = { email: email };
+      const exgistingUser = await myUser.findOne(query);
+      if (exgistingUser) {
+        res.send({ message: "This User Allready Login" });
+      } else {
+        const result = await myUser.insertOne(request);
+        res.send(result);
+        console.log(request);
+      }
+    });
 
     app.patch("/user/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const data = req.body;
       const seter = {
-        $set:data
-      }
-      const result = await myUser.updateOne(query, seter)
-      res.send(result)
-    })
+        $set: data,
+      };
+      const result = await myUser.updateOne(query, seter);
+      res.send(result);
+    });
 
-    app.delete("/user/:id", async (req,res) => {
+    app.delete("/user/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await myUser.deleteOne(query);
       res.send(result);
-    })
+    });
 
+    // producat limet APIS
+    app.get("/limet-producat", async (req, res) => {
+      const coursor = myCollection.find().sort({ created_at: 1 }).limit(10);
+      const result = await coursor.toArray();
+      res.send(result);
+    });
 
     // ProducatgetAll
     app.get("/producat", async (req, res) => {
@@ -81,9 +95,11 @@ async function run() {
     // getOne id
     app.get("/producat/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
+      const query = { _id: id };
       const result = await myCollection.findOne(query);
       res.send(result);
+      console.log("Searching for:", id);
+      console.log("Query result:", result);
     });
 
     // post
@@ -114,44 +130,43 @@ async function run() {
       res.send(result);
     });
 
-
     // bids relatieat API
     app.get("/bids", async (req, res) => {
       const email = req.query.email;
-      const query = {} 
-      if(email){
-        query.buyer_email = email
+      const query = {};
+      if (email) {
+        query.buyer_email = email;
       }
       const data = myBids.find(query);
-      const result = await data.toArray()
+      const result = await data.toArray();
       res.send(result);
-      console.log(email)
-    })
+      console.log(email);
+    });
 
     app.post("/bids", async (req, res) => {
       const data = req.body;
       const result = await myBids.insertOne(data);
-      res.send(result)
-    } )
+      res.send(result);
+    });
 
-    app.patch("/bids/:id" , async (req,res) => {
+    app.patch("/bids/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const data = req.body;
-      const seter ={
-        $set:data
+      const seter = {
+        $set: data,
       };
 
-      const result = await myBids.updateOne(query, seter)
+      const result = await myBids.updateOne(query, seter);
       res.send(result);
-    })
+    });
 
     app.delete("/bids/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) };
       const result = await myBids.deleteOne(query);
-      res.send(result);      
-    })
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(

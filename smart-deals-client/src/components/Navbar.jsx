@@ -7,7 +7,6 @@ import { HashLoader } from "react-spinners";
 
 const Navbar = () => {
   const { logOutUser, user, loding } = useContext(AuthContex);
-  // console.log(user)
   const link = (
     <div className="text-[16px] font-medium">
       <NavLink to="/" className="ml-3">

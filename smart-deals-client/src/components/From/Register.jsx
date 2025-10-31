@@ -17,24 +17,22 @@ const Register = () => {
     const photoURL = e.target.img.value;
     const displayName = e.target.name.value;
     const password = e.target.password.value;
-    console.log({ email, password });
     const updet = { displayName, photoURL };
 
     userCreat(email, password)
       .then((result) => {
-        console.log(result.user);
-        const userdat = {
-          name: result.user.displayName,
-          email: result.user.email,
-          image: result.user.photoURL,
-        };
         updeatUser(updet).then(() => {
+          const userdat = {
+            name: result.user.displayName,
+            email: result.user.email,
+            image: result.user.photoURL,
+          };
           navagiet(`${locations.state ? locations.state : "/"}`);
 
           fetch("http://localhost:3000/user", {
             method: "POST",
             headers: {
-              "content-type": "application/json",
+             "content-type": "application/json"
             },
             body: JSON.stringify(userdat),
           })
@@ -44,15 +42,15 @@ const Register = () => {
             });
         });
       })
-      .catch((er) => {
-        console.log(er);
+      .catch(() => {
+        // console.log(er);
       });
   };
 
   const loginGoogle = () => {
     googleLogin()
       .then((result) => {
-        console.log(result.user);
+        // console.log(result.user);
         navagiet(`${locations.state ? locations.state : "/"}`);
         const userdat = {
           name: result.user.displayName,
@@ -72,14 +70,13 @@ const Register = () => {
             console.log("Login User Data Saved in MongoDB Database", data);
           });
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
 
   return (
     <div>
-      <Navbar></Navbar>
 
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm p-8">
