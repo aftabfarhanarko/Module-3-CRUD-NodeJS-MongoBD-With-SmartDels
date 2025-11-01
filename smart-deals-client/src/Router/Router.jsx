@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
       {
       path:"/producat/:id",
       loader:({params}) => fetch(`http://localhost:3000/producat/${params.id}`) ,
-      element:<ProducatDetlics></ProducatDetlics>,
+      element: <PrivetRouter> <ProducatDetlics></ProducatDetlics></PrivetRouter>,
       },
       {
         path: "/login",
