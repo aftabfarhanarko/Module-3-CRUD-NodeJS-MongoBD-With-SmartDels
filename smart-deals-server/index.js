@@ -3,13 +3,13 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
+require("dotenv").config();
 
 // set midelwear
 app.use(cors());
 app.use(express.json());
 
-const uri =
-  "mongodb+srv://SmartDealsUser:nbOJwLkt8IV5LCGW@clustermyfirstmongodbpr.2cecfoe.mongodb.net/?appName=ClusterMyFirstMongoDbProject";
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@clustermyfirstmongodbpr.2cecfoe.mongodb.net/?appName=ClusterMyFirstMongoDbProject`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -39,10 +39,11 @@ async function run() {
     });
 
     app.post("/user", async (req, res) => {
-      const request = req.body;
       const email = req.body.email;
       const query = { email: email };
       const exgistingUser = await myUser.findOne(query);
+
+      const request = req.body;
       if (exgistingUser) {
         res.send({ message: "This User Allready Login" });
       } else {
@@ -83,8 +84,8 @@ async function run() {
       //   const data = myCollection.find().sort({ price_min: -1 }).skip(2).limit(6).project(projectFild);
 
       const email = req.query.email;
-      console.log(email);
       const point = {};
+
       if (email) {
         point.email = email;
       }
@@ -98,8 +99,14 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await myCollection.findOne(query);
       res.send(result);
-      console.log("Searching for:", id);
-      console.log("Query result:", result);
+    });
+
+    app.get("/producat/bids/:id", async (req, res) => {
+      const producatId = req.params.id;
+      const coursor = { producatIDS: producatId };
+      const query = myBids.find(coursor).sort({ bid_price: -1 });
+      const result = await query.toArray();
+      res.send(result);
     });
 
     // post
@@ -130,18 +137,33 @@ async function run() {
       res.send(result);
     });
 
-    // bids relatieat API
+    // // bids relatieat API
+    // app.get("/bids", async (req, res) => {
+    //   const email = req.query.email;
+    //   const query = {};
+    //   if (email) {
+    //     query.byer_name = email;
+    //   }
+    //   const data = myBids.find(query);
+    //   const result = await data.toArray();
+    //   res.send(result);
+    //   console.log(email);
+    // });
+
+  //  Bids Email Match to return
     app.get("/bids", async (req, res) => {
-      const email = req.query.email;
       const query = {};
-      if (email) {
-        query.buyer_email = email;
+      if (req.query.email) {
+        query.byer_email = req.query.email;
       }
-      const data = myBids.find(query);
-      const result = await data.toArray();
+      const coursor = myBids.find(query).sort({bid_price: 1});
+      const result = await coursor.toArray();
+
       res.send(result);
-      console.log(email);
+      console.log(result);
     });
+
+
 
     app.post("/bids", async (req, res) => {
       const data = req.body;

@@ -1,18 +1,29 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { Link, useLoaderData } from "react-router";
 import { AuthContex } from "../../Context/AuthContex";
 import { IoClose } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const ProducatDetlics = () => {
   const producat = useLoaderData();
-  console.log(producat);
   const { user } = useContext(AuthContex);
+  const [bides, setBides] = useState([]);
   const sdhsh = producat.created_at;
   const tashdo = new Date(sdhsh);
   const formatted = tashdo.toISOString().split("T")[0]; // "2025-10-29"
-
   const refrence = useRef(null);
+  const findesID = producat._id;
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/producat/bids/${findesID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        setBides(data);
+      });
+  }, [findesID]);
+
   const handelModal = () => {
     refrence.current.showModal();
   };
@@ -22,10 +33,52 @@ const ProducatDetlics = () => {
     const email = e.target.email.value;
     const name = e.target.name.value;
     const images = e.target.imges.value;
-    const price = e.target.price.value;
-    const conteact = e.target.info.value;
-    console.log({ email, price, name, images, conteact });
+    const price = Number(e.target.price.value);
+    // console.log({ email, price, name, images });
+    const producatID = producat._id;
+    console.log(producatID);
+
+    const bidesProducat = {
+      producatIDS: producatID,
+      byer_image: images,
+      byer_name: name,
+      byer_email: email,
+      bid_price: price,
+      status: "pending",
+    };
+
+    fetch("http://localhost:3000/bids", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(bidesProducat),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("After The Data Inseart Of tHe producat in MongoDB", data);
+        if (data.insertedId) {
+          refrence.current.close();
+          e.target.reset();
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your Bids has been Places",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+
+          // add new bids
+          bidesProducat._id = data.insertedId;
+          const myState = [...bides, bidesProducat];
+          myState.sort((a, b) => b.bid_price - a.bid_price);
+          setBides(myState);
+        }
+      });
   };
+
+  // console.log(user);
+
   return (
     <div className="bg-base-200 py-15">
       <div className="max-w-7xl mx-auto p-6  ">
@@ -212,23 +265,26 @@ const ProducatDetlics = () => {
                 {/* Seller Details */}
                 <div className="space-y-2 text-sm">
                   <div className="flex">
-                    <span className="font-semibold text-gray-700 w-24">
-                      Location:
+                    <span className="font-semibold text-gray-700  flex gap-2">
+                      Location: <span>{producat.seller_name}</span>
                     </span>
                     <span className="text-gray-600">{""}</span>
                   </div>
                   <div className="flex">
-                    <span className="font-semibold text-gray-700 w-24">
-                      Contact:
+                    <span className="font-semibold text-gray-700 w-24 flex gap-2">
+                      Contact:{" "}
+                      <span className="text-sm font-medium">
+                        {producat.seller_contact}
+                      </span>
                     </span>
                     <span className="text-gray-600">{""}</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="font-semibold text-gray-700 w-24">
-                      Status:
-                    </span>
-                    <span className="inline-block px-3 py-1 bg-yellow-400 text-yellow-900 text-xs font-semibold rounded-full">
-                      {status}
+                    <span className="font-semibold text-gray-700 w-24 flex gap-2">
+                      Status:{" "}
+                      <span className="inline-block px-3 py-1 bg-yellow-400 text-yellow-900 text-xs font-semibold rounded-full">
+                        {producat.status}
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -415,9 +471,80 @@ const ProducatDetlics = () => {
         </div>
 
         {/* Product Description Section */}
-        
+
         <div className="py-20">
-            <h1 className="text-3xl font-bold"> Bids For This Products: 03</h1>
+          <h2 className="text-3xl font-semibold text-purple-600 mt-2">
+            Bids For This Products: {bides?.length}
+          </h2>
+
+          <div className="overflow-x-auto shadow mt-10 rounded-lg">
+            <table className="table">
+              {/* head */}
+              <thead>
+                <tr>
+                  <th>SL No</th>
+                  <th>Producat</th>
+                  <th>Bider Info</th>
+                  <th>Bid Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {/* row 1 */}
+                {bides?.map((bid, index) => (
+                  <tr key={index}>
+                    <th>{index + 1}</th>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle h-12 w-12">
+                            <img
+                              src={producat.image }
+                              alt="No Img"
+                            />
+                          </div>
+                            
+                          </div>
+                          <div>
+                            <p className="text-md  font-semibold">{producat.title}</p>
+                            <p className="font-medium">${producat.price_min}-{producat.price_max}</p>
+                        </div>
+                        
+                      </div>
+                    </td>
+
+                    <td className="flex items-center">
+                      <div className="mask mask-squircle h-12 w-12">
+                        <img
+                          src={bid.byer_image ? bid.byer_image : "No Img"}
+                          alt="No Img"
+                        />
+                      </div>
+
+                      <div>
+                        <p className="font-semibold ml-2.5"> {bid.byer_name}</p>
+                        <span className="badge badge-ghost badge-sm">
+                          {bid.byer_email}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      $<span>{bid.bid_price}</span>
+                    </td>
+                    <th className="flex items-center mt-3 md:mt-3">
+                      <button className="btn btn-outline  text-green-600  btn-xs hover:border-green-600 ">
+                        Accept Offer
+                      </button>
+                      <button className="btn ml-2 btn-outline  text-red-600  btn-xs hover:border-red-600 ">
+                        Reject offer
+                      </button>
+                    </th>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

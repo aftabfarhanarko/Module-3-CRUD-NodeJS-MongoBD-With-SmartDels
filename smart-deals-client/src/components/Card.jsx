@@ -1,11 +1,10 @@
 import React, { use } from "react";
 import { Link } from "react-router";
 
-const RecentProducat = ({ promiseData }) => {
-  const producats = use(promiseData);
-
+const Card = ({ promiseProducat }) => {
+  const producats = use(promiseProducat);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mx-auto my-10">
       {producats.map((producat) => (
         <div
           key={producat._id}
@@ -48,4 +47,4 @@ const RecentProducat = ({ promiseData }) => {
   );
 };
 
-export default RecentProducat;
+export default Card;

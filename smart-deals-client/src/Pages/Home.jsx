@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 
-import { IoIosSearch } from "react-icons/io";
 import RecentProducat from "../components/RecentProducat/RecentProducat";
 import { HashLoader } from "react-spinners";
 import Hero from "../components/Hero/Hero";
@@ -11,10 +10,10 @@ const promiseData = fetch("http://localhost:3000/limet-producat").then((res) =>
 const Home = () => {
   return (
     <div>
-        <section>
+        <section className="">
         <Hero></Hero>
       </section>
-      <div className="w-11/12 mx-auto my-15">
+      <div className="w-11/12 mx-auto my-15 ">
       <h1 className="text-3xl text-center my-6 font-bold ">Recent <span className="text-primary">Products</span></h1>
         <Suspense
           fallback={
