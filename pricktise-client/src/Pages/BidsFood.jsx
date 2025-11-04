@@ -4,13 +4,28 @@ import { ClockLoader } from "react-spinners";
 
 const BidsFood = () => {
   const { user } = useContext(AuthContext);
-  console.log(user?.email);
   const [bidesData, setBidesData] = useState([]);
+
+  // useEffect(() => {
+  //   if (user?.email) {
+  //     fetch(`http://localhost:4000/price?email=${user.email}`, {
+  //       method: "GET",
+  //     })
+  //       .then((res) => res.json())
+  //       .then((datra) => {
+  //         console.log("THis is a data of the value", datra);
+  //         setBidesData(datra);
+  //       });
+  //   }
+  // }, [user?.email]);
 
   useEffect(() => {
     if (user?.email) {
       fetch(`http://localhost:4000/price?email=${user.email}`, {
         method: "GET",
+        headers: {
+          author: `Berear ${user.accessToken}`,
+        },
       })
         .then((res) => res.json())
         .then((datra) => {
@@ -20,21 +35,21 @@ const BidsFood = () => {
     }
   }, [user?.email]);
 
- const handelDelet = (_id) => {
+  const handelDelet = (_id) => {
     console.log(_id);
-    
-    fetch(`http://localhost:4000/price/${_id}`,{
-        method:"DELETE"
-    }).then(res => res.json())
-    .then(data => {
-        console.log('This items Delete Now', data);
-        if(data. deletedCount){
-            const filters = bidesData.filter(one => one._id !== _id)
-            setBidesData(filters)
-        }
 
+    fetch(`http://localhost:4000/price/${_id}`, {
+      method: "DELETE",
     })
- }
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("This items Delete Now", data);
+        if (data.deletedCount) {
+          const filters = bidesData.filter((one) => one._id !== _id);
+          setBidesData(filters);
+        }
+      });
+  };
 
   return (
     <div className="w-11/12 mx-auto">
