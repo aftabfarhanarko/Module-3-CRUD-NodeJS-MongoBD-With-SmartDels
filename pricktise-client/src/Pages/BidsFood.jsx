@@ -6,25 +6,13 @@ const BidsFood = () => {
   const { user } = useContext(AuthContext);
   const [bidesData, setBidesData] = useState([]);
 
-  // useEffect(() => {
-  //   if (user?.email) {
-  //     fetch(`http://localhost:4000/price?email=${user.email}`, {
-  //       method: "GET",
-  //     })
-  //       .then((res) => res.json())
-  //       .then((datra) => {
-  //         console.log("THis is a data of the value", datra);
-  //         setBidesData(datra);
-  //       });
-  //   }
-  // }, [user?.email]);
-
+  // JWT Custoom Token Verify
   useEffect(() => {
     if (user?.email) {
       fetch(`http://localhost:4000/price?email=${user.email}`, {
         method: "GET",
         headers: {
-          author: `Berear ${user.accessToken}`,
+          author: `Berear ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => res.json())
@@ -34,6 +22,23 @@ const BidsFood = () => {
         });
     }
   }, [user?.email]);
+
+  // firebase Token Verify setup
+  // useEffect(() => {
+  //   if (user?.email) {
+  //     fetch(`http://localhost:4000/price?email=${user.email}`, {
+  //       method: "GET",
+  //       headers: {
+  //         author: `Berear ${user.accessToken}`,
+  //       },
+  //     })
+  //       .then((res) => res.json())
+  //       .then((datra) => {
+  //         console.log("THis is a data of the value", datra);
+  //         setBidesData(datra);
+  //       });
+  //   }
+  // }, [user?.email]);
 
   const handelDelet = (_id) => {
     console.log(_id);

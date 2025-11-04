@@ -39,6 +39,22 @@ const ContextProviter = ({ children }) => {
   useEffect(() => {
     const unsubcripet = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      if(currentUser){
+     
+         const lodeUser = {email: currentUser.email}
+        fetch('http://localhost:4000/tokens',{
+           method:"POST",
+            headers: {
+            "content-type": "application/json",
+          },
+          body:JSON.stringify(lodeUser)
+        }).then(res => res.json())
+        .then(data => {
+          console.log("Data is COmming Soons....",data)
+          localStorage.setItem("token", data.token)
+        })
+        
+      }
     });
 
     return () => {
