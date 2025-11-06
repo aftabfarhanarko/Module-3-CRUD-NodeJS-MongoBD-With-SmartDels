@@ -4,6 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { Link, useLoaderData } from "react-router";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
+import useAxios from "../Hooks/Axios";
 
 const FoodDetlics = () => {
   const { user } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const FoodDetlics = () => {
   const mydate = new Date(producat.created_at);
   const formary = mydate.toISOString().split("T")[0];
   const producatID = producat._id;
-  const [dats , setDats] = useState([]);
+  const [dats, setDats] = useState([]);
 
   const handelModal = () => {
     refarent.current.showModal();
@@ -36,7 +37,7 @@ const FoodDetlics = () => {
       status: "pending",
     };
 
-    fetch("http://localhost:4000/price", {
+    fetch("https://pricktise-server.vercel.app/price", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -50,20 +51,42 @@ const FoodDetlics = () => {
           toast.success("Youer Food Price Bid Set Now");
           bidesProducat._id = data.insertedId;
           const newadd = [...dats, bidesProducat];
-          setDats(newadd)
-          //  refarent.current.close()
+          setDats(newadd);
         }
       });
+
+    // axiosHok.post("/price", {
+    //   headers: {
+    //     "content-type": "application/json",
+    //   },
+    // }).then((data) => {
+    //   const mydata = data.data
+    //     // console.log("Bides Data Saved On mongoDb", mydata);
+    //     if(mydata.insertedId){
+    //        toast.success("Youer Food Price Bid Set Now");
+    //        bidesProducat._id = mydata.insertedId;
+    //        const addnewarray =  [...dats, bidesProducat];
+    //        console.log(addnewarray);
+           
+    //     }
+    //     // if (data.data.insertedId) {
+    //     //   toast.success("Youer Food Price Bid Set Now");
+    //     //   bidesProducat._id = data.data.insertedId;
+    //     //   const newadd = [...dats, bidesProducat];
+    //     //   setDats(newadd);
+    //     //   //  refarent.current.close()
+    //     // }
+    //   })
   };
 
   useEffect(() => {
-    fetch(`http://localhost:4000/price/${producatID}`, {
+    fetch(`https://pricktise-server.vercel.app/price/${producatID}`, {
       method: "GET",
     })
       .then((res) => res.json())
       .then((dfata) => {
-        console.log("This is All Data", dfata);
-        setDats(dfata)
+        // console.log("This is All Data", dfata);
+        setDats(dfata);
       });
   }, [producatID]);
 
@@ -427,18 +450,17 @@ const FoodDetlics = () => {
                       <div className="flex items-center gap-3">
                         <div className="avatar">
                           <div className="mask mask-squircle h-12 w-12">
-                            <img
-                              src={producat.image }
-                              alt="No Img"
-                            />
+                            <img src={producat.image} alt="No Img" />
                           </div>
-                            
-                          </div>
-                          <div>
-                            <p className="text-md  font-semibold">{producat.title}</p>
-                            <p className="font-medium">${producat.price_min}-{producat.price_max}</p>
                         </div>
-                        
+                        <div>
+                          <p className="text-md  font-semibold">
+                            {producat.title}
+                          </p>
+                          <p className="font-medium">
+                            ${producat.price_min}-{producat.price_max}
+                          </p>
+                        </div>
                       </div>
                     </td>
 

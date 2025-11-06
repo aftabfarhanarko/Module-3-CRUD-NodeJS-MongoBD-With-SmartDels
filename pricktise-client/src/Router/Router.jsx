@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:"/allfood",
-                loader:() => fetch("http://localhost:4000/food"),
+                loader:() => fetch("https://pricktise-server.vercel.app/food"),
                 element:<AllFood></AllFood>
             },
             {
@@ -36,7 +36,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:"/detlise/:id",
-                loader:({params}) => fetch(`http://localhost:4000/food/${params.id}`),
+                loader:({params}) => fetch(`https://pricktise-server.vercel.app/food/${params.id}`),
                 element:<FoodDetlics></FoodDetlics>
             },
             {

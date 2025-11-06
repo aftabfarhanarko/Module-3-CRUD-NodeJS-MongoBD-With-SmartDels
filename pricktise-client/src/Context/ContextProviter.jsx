@@ -25,35 +25,36 @@ const ContextProviter = ({ children }) => {
   };
 
   const ubdeatProfile = (updet) => {
-    return updateProfile(auth.currentUser ,updet);
-  }
-  
+    return updateProfile(auth.currentUser, updet);
+  };
+
   const googlieLogind = () => {
-    return signInWithPopup(auth, provider)
-  }
+    return signInWithPopup(auth, provider);
+  };
 
   const userLogOut = () => {
     return signOut(auth);
-  }
+  };
 
   useEffect(() => {
     const unsubcripet = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if(currentUser){
-     
-         const lodeUser = {email: currentUser.email}
-        fetch('http://localhost:4000/tokens',{
-           method:"POST",
-            headers: {
+      if (currentUser) {
+        const lodeUser = { email: currentUser.email };
+        fetch("https://pricktise-server.vercel.app/tokens", {
+          method: "POST",
+          headers: {
             "content-type": "application/json",
           },
-          body:JSON.stringify(lodeUser)
-        }).then(res => res.json())
-        .then(data => {
-          console.log("Data is COmming Soons....",data)
-          localStorage.setItem("token", data.token)
+          body: JSON.stringify(lodeUser),
         })
-        
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Data is COmming Soons....", data);
+            localStorage.setItem("token", data.token);
+          });
+      }else{
+        localStorage.removeItem("token")
       }
     });
 
@@ -68,7 +69,7 @@ const ContextProviter = ({ children }) => {
     user,
     ubdeatProfile,
     googlieLogind,
-    userLogOut
+    userLogOut,
   };
   return (
     <div>

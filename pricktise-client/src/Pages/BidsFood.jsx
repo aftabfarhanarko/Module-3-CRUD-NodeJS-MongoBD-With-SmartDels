@@ -1,49 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../Context/AuthContext";
+import React, { useEffect, useState } from "react";
 import { ClockLoader } from "react-spinners";
+import useAuth from "../Hooks/UserAuth";
+import useSecureAxios from "../Hooks/AxiosSecure";
 
 const BidsFood = () => {
-  const { user } = useContext(AuthContext);
+  const user = useAuth();
+  const axiosHook = useSecureAxios();
   const [bidesData, setBidesData] = useState([]);
 
   // JWT Custoom Token Verify
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:4000/price?email=${user.email}`, {
-        method: "GET",
-        headers: {
-          author: `Berear ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((datra) => {
-          console.log("THis is a data of the value", datra);
-          setBidesData(datra);
-        });
+      axiosHook.get(`/price?email=${user.email}`)
+      .then((datra) => {
+        console.log("THis is a data of the value", datra.data);
+        setBidesData(datra.data);
+      });
     }
-  }, [user?.email]);
+  }, [user?.email, axiosHook]);
 
-  // firebase Token Verify setup
-  // useEffect(() => {
-  //   if (user?.email) {
-  //     fetch(`http://localhost:4000/price?email=${user.email}`, {
-  //       method: "GET",
-  //       headers: {
-  //         author: `Berear ${user.accessToken}`,
-  //       },
-  //     })
-  //       .then((res) => res.json())
-  //       .then((datra) => {
-  //         console.log("THis is a data of the value", datra);
-  //         setBidesData(datra);
-  //       });
-  //   }
-  // }, [user?.email]);
-
+ 
   const handelDelet = (_id) => {
     console.log(_id);
 
-    fetch(`http://localhost:4000/price/${_id}`, {
+    fetch(`https://pricktise-server.vercel.app/price/${_id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())

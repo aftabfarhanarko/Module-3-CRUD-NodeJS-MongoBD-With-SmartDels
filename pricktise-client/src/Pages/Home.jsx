@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import Hero from "../components/Hero";
 import Card from "../components/Card";
 
-const promiseData = fetch("http://localhost:4000/limet_producat").then((res) =>
+const promiseData = fetch("https://pricktise-server.vercel.app/limet_producat").then((res) =>
   res.json()
 );
 const Home = () => {

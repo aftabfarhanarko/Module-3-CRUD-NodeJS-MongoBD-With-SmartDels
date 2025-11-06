@@ -27,7 +27,7 @@ const Register = () => {
           };
 
           // setUser Data in Mongodb
-          fetch("http://localhost:4000/user", {
+          fetch("https://pricktise-server.vercel.app/user", {
             method: "POST",
             headers: {
               "content-type": "application/json",
@@ -54,7 +54,7 @@ const Register = () => {
         image: result.user.photoURL,
       };
 
-      fetch("http://localhost:4000/user", {
+      fetch("https://pricktise-server.vercel.app/user", {
         method: "POST",
         headers: {
           "content-type": "application/json",

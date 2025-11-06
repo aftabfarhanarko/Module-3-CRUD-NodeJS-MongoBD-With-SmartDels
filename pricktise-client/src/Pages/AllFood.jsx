@@ -31,7 +31,7 @@ const AllFood = () => {
 
             {/* Product Title */}
             <h2 className=" text-gray-800 font-semibold text-[15px] mb-1">
-              Yamaha Fz Guitar [ Full Fresh Condition ]{producat.title}
+             {producat.title}
             </h2>
 
             {/* Price */}
